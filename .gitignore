@@ -1,0 +1,5 @@
+vendor/*.tar.gz
+vendor/locales
+vendor/schema
+vendor/styles
+vendor/test-suite
