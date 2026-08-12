@@ -113,21 +113,21 @@
       <xsl:sort select="@name"/>
 
       function <xsl:apply-templates select="." mode="name"/>(reference) {
-        return [
+        return lib.interpret(reference,[
           <xsl:for-each select="*">
             <xsl:apply-templates select="."/>,
           </xsl:for-each>
-        ];
+        ]);
       }
     </xsl:for-each>
 
     globalThis['cite-hard.styles.<xsl:value-of select="$stylename"/>'] = new Processor({
       cite: function _cite(reference) {
-        return [
+        return lib.interpret(reference, [
         <xsl:for-each select="csl:citation/csl:layout/*">
           <xsl:apply-templates select="."/>,
         </xsl:for-each>
-        ];
+        ]);
       },
 
       citation: () => 'TODO',
@@ -178,7 +178,7 @@
             [
               <xsl:apply-templates select="." mode="name"/>,
               <xsl:apply-templates select="." mode="options"/>,
-              <xsl:apply-templates select="." mode="children"/>
+              [<xsl:apply-templates select="." mode="children"/>]
             ]
           </xsl:with-param>
         </xsl:apply-templates>
@@ -192,14 +192,11 @@
     lib.<xsl:value-of select="str:replace(name(), '-', '_')"/>
   </xsl:template>
 
-  <xsl:template match="csl:*" mode="options">
-    null
-  </xsl:template>
+  <xsl:template match="csl:*" mode="options"></xsl:template>
 
   <xsl:template match="csl:*" mode="children">
     <xsl:for-each select="*">
-      <xsl:apply-templates select="."/>
-      <xsl:if test="position() != last()">,</xsl:if>
+      <xsl:apply-templates select="."/>,
     </xsl:for-each>
   </xsl:template>
 

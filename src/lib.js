@@ -1,16 +1,20 @@
 goog.module('citehard.lib');
 
-function join(_reference, {delimiter}, ...children) {
-  return 'TODO';
+function join(reference, {delimiter}, [fn, opts, children]) {
+  return fn(reference, opts, children);
 }
 
-function wrap(_reference, {prefix, suffix}, ...children) {
-  return 'TODO';
+function wrap(reference, {prefix, suffix}, [fn, opts, children]) {
+  const ret = [];
+  ret.push({prefix});
+  ret.push(fn(reference, opts, children));
+  ret.push({suffix});
+  return ret;
 }
 
 // <csl:text value="..."/>
-function value(_reference, {value}) {
-  return value;
+function value(_, {value}) {
+  return {raw: value};
 }
 
 function number_numeric() {
@@ -40,8 +44,8 @@ function term() {
   return 'TODO';
 }
 
-function group(reference, options) {
-  return 'TODO';
+function group(reference, options, children) {
+  return children.map(([fn, opts, rest]) => fn(reference, opts, rest));
 }
 
 function label() {
@@ -87,12 +91,12 @@ function test(reference, {mode, tests}) {
   return mode !== 'any';
 }
 
-function choose(reference, _options, branches) {
+function choose(reference, _, branches) {
   for (let i = 0; i < branches.length; i++) {
-    const [pred, options, ...children] = branches[i];
+    const [pred, options, children] = branches[i];
 
     if (pred(reference, options)) {
-      return children.map((g, opts, ...rest) => g(reference, opts, ...rest));
+      return children.map(([g, opts, rest]) => g(reference, opts, rest));
     }
   }
 }
@@ -124,12 +128,17 @@ function T() {
   return true;
 }
 
+function interpret(reference, body) {
+  return body.map(([fn, opts, children]) => fn(reference, opts, children));
+}
+
 exports = {
   T,
   choose,
   date,
   date_part,
   group,
+  interpret,
   join,
   label,
   name,
