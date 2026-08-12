@@ -178,7 +178,7 @@
             [
               <xsl:apply-templates select="." mode="name"/>,
               <xsl:apply-templates select="." mode="options"/>,
-              [<xsl:apply-templates select="." mode="children"/>]
+              <xsl:apply-templates select="." mode="children"/>
             ]
           </xsl:with-param>
         </xsl:apply-templates>
@@ -195,10 +195,14 @@
   <xsl:template match="csl:*" mode="options"></xsl:template>
 
   <xsl:template match="csl:*" mode="children">
+    [
     <xsl:for-each select="*">
       <xsl:apply-templates select="."/>,
     </xsl:for-each>
+    ]
   </xsl:template>
+
+  <xsl:template match="csl:*[not(node())]" mode="children"></xsl:template>
 
   <!-- IF/ELSE-IF -->
 
@@ -293,6 +297,8 @@
   <xsl:template match="csl:macro | csl:text[@macro]" mode="name">
     macro_<xsl:value-of select="str:replace(concat(@name, @macro), '-', '_')"/>
   </xsl:template>
+
+  <xsl:template match="csl:macro" mode="children"></xsl:template>
 
   <!-- L10N -->
 
