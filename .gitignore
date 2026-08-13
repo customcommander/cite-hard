@@ -1,3 +1,6 @@
+.claude/worktrees
+dist
+out
 vendor/*.tar.gz
 vendor/locales
 vendor/schema

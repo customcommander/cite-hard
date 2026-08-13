@@ -2,7 +2,7 @@ goog.module('citehard.Processor');
 
 class Processor {
 
-  /** @param {{cite: function(),citation: function()}} opts */
+  /** @param {{cite: function(Object, Object),citation: function(Object)}} opts */
   constructor({cite, citation}) {
     this.registry = new Map();
     this._cite = cite;
@@ -10,7 +10,7 @@ class Processor {
   }
 
   cite(reference) {
-    return this._cite(reference);
+    return this._cite(reference, {});
   }
 
   citation(references) {

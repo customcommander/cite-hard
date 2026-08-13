@@ -1,6 +1,8 @@
 SPECS = $(wildcard vendor/test-suite/*.json)
 TESTS = $(patsubst vendor/test-suite/%.json,test/%.test.js,$(SPECS))
 
+STYLES = $(patsubst vendor/styles/%.csl,out/styles/%.cljs,$(wildcard vendor/styles/*.csl))
+
 # all: | vendor test
 all: | vendor
 
@@ -36,6 +38,22 @@ vendor/test-suite:
 
 # clean:; rm -rf vendor test
 clean:; rm -rf vendor/schema vendor/styles vendor/locales vendor/test-suite
+
+src/uncompiled/%.js: src/transform.xsl
+	mkdir -p $(@D)
+	xsltproc --stringparam stylename $* $^ vendor/styles/$*.csl > $@
+
+dist/%.js: src/uncompiled/%.js src/lib.js src/processor.js src/externs.js
+	closure-compiler -O ADVANCED \
+                   --js=vendor/base.js \
+	                 --js=src/lib.js \
+                   --js=src/processor.js \
+                   --js=src/externs.js \
+                   --js=$< \
+                   --entry_point=goog:citehard.styles.uncompiled \
+                   --isolation_mode=IIFE \
+	                 --hide_warnings_for=vendor/base.js \
+                   --js_output_file=$@
 
 # .PHONY: vendor test
 .PHONY: vendor locales
