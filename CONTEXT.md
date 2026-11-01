@@ -31,3 +31,7 @@ _Avoid_: Citation item, reference (a reference is the Registry entry a Cite poin
 **Cluster**:
 An ordered group of Cites rendered together at one place in the document. The CSLProcessor keeps Clusters in document order; the caller tells it where each Cluster sits relative to the others.
 _Avoid_: Citation (ambiguous with a single Cite)
+
+**Dangling Cite**:
+A Cite whose reference is not in the Registry. It stays in its Cluster and renders as a placeholder until a reference with the same id is added.
+_Avoid_: Orphan, broken cite
