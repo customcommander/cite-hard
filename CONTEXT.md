@@ -23,3 +23,11 @@ _Avoid_: Engine, citeproc
 **Registry**:
 The set of references currently known to a CSLProcessor.
 _Avoid_: Library, store
+
+**Cite**:
+One reference occurrence in a document, with its locator, label, prefix and suffix.
+_Avoid_: Citation item, reference (a reference is the Registry entry a Cite points at)
+
+**Cluster**:
+An ordered group of Cites rendered together at one place in the document. The CSLProcessor keeps Clusters in document order; the caller tells it where each Cluster sits relative to the others.
+_Avoid_: Citation (ambiguous with a single Cite)
