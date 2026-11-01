@@ -40,6 +40,14 @@ _Avoid_: Orphan, broken cite
 The rendered result of a Cite, Cluster or bibliography entry: a pair of strings, one HTML and one plain text, always produced together.
 _Avoid_: Format setting, rendering mode
 
+**Stage**:
+An optional per-Style behaviour (cite sorting, bibliography sorting, disambiguation, collapsing) that the Generated Processor hands to the CSLProcessor as a function, or leaves out entirely.
+_Avoid_: Plugin, hook, option
+
+**Sort Variant**:
+The second compiled form of the macros a Style's `cs:sort` keys use, which produces canonical sort keys.
+_Avoid_: Sort mode, sort pass
+
 **Layout**:
 The per-Style bibliography presentation parameters (hanging indent, second-field align, entry spacing, line spacing) delivered alongside the bibliography entries.
 _Avoid_: Bibliography options
