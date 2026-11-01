@@ -35,3 +35,11 @@ _Avoid_: Citation (ambiguous with a single Cite)
 **Dangling Cite**:
 A Cite whose reference is not in the Registry. It stays in its Cluster and renders as a placeholder until a reference with the same id is added.
 _Avoid_: Orphan, broken cite
+
+**Output**:
+The rendered result of a Cite, Cluster or bibliography entry: a pair of strings, one HTML and one plain text, always produced together.
+_Avoid_: Format setting, rendering mode
+
+**Layout**:
+The per-Style bibliography presentation parameters (hanging indent, second-field align, entry spacing, line spacing) delivered alongside the bibliography entries.
+_Avoid_: Bibliography options
