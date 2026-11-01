@@ -10,9 +10,9 @@ Events carry rendered output (ADR 0002), so the output format has to be known wh
 
 - Formats: HTML and plain text. RTF is out of scope.
 - Output is a pair `{html, text}`. `cluster` payloads are `{id, output, missing}`; `cite()` returns the pair.
-- `bibliography()` and the `bibliography` event carry `{entries: [{id, output}], layout: {hangingIndent, secondFieldAlign, entrySpacing, lineSpacing}}`. `layout` comes from `cs:bibliography` and is a compile-time constant. Entries are in bibliography sort order.
+- `bibliography()` and the `bibliography` event carry `{html, text, entries: [{id, output}], layout: {hangingIndent, secondFieldAlign, entrySpacing, lineSpacing}}`. The whole bibliography is itself an Output: `html` is `<div class="csl-bib-body">` around one `<div class="csl-entry">` per entry (classes only, no inline CSS), `text` is the entries joined by newlines. `entries` stays for callers that update incrementally. `layout` comes from `cs:bibliography` and is a compile-time constant. Entries are in bibliography sort order.
 - A Dangling Cite renders as `[?]` in both formats, replacing the whole Cite (locator, prefix and suffix included).
-- `display` in HTML: runs wrapped in `<div class="csl-block|csl-left-margin|csl-right-inline|csl-indent">`; the entry itself is not wrapped. In text: consecutive `block` runs joined by `\n` with no leading or trailing newline, `indent` on its own line with a fixed indent, `left-margin` and `right-inline` joined by one space. Text behaviour is to be refined once the test-suite research reports what fixtures expect.
+- `display` in HTML: runs wrapped in `<div class="csl-block|csl-left-margin|csl-right-inline|csl-indent">`; the entry itself is not wrapped. In text: consecutive `block` runs joined by `\n` with no leading or trailing newline, `indent` on its own line with a fixed indent, `left-margin` and `right-inline` joined by one space. The fixtures only cover HTML; for plain text, citeproc-js output on the smoke styles defines the expected behaviour (see #9).
 - The styled tree is internal and not exposed.
 
 ## Considered options
@@ -24,4 +24,4 @@ Events carry rendered output (ADR 0002), so the output format has to be known wh
 
 ## Consequences
 
-Both renderers are in every file, which ADVANCED cannot prune; the text renderer is nearly free because every node already carries `raw`. Payloads roughly double in size. `html`, `text`, `output`, `entries` and `layout` keys must be in the externs.
+Both renderers are in every file, which ADVANCED cannot prune; the text renderer is nearly free because every node already carries `raw`. Payloads roughly double in size, and the bibliography carries its entries twice (joined and individual). `html`, `text`, `output`, `entries` and `layout` keys must be in the externs.
