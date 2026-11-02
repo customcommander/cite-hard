@@ -24,6 +24,10 @@ _Avoid_: Engine, citeproc
 The set of references currently known to a CSLProcessor.
 _Avoid_: Library, store
 
+**Reference Id**:
+The string form of a reference's CSL-JSON `id`. Callers may pass a string or a number; the CSLProcessor coerces it once at its boundary, so `1` and `"1"` are the same reference and every id it emits is a string.
+_Avoid_: Key, item id
+
 **Cite**:
 One reference occurrence in a document, with its locator, label, prefix and suffix.
 _Avoid_: Citation item, reference (a reference is the Registry entry a Cite points at)
