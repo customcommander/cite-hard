@@ -59,3 +59,7 @@ _Avoid_: Sort mode, sort pass
 **Layout**:
 The per-Style bibliography presentation parameters (hanging indent, second-field align, entry spacing, line spacing) delivered alongside the bibliography entries.
 _Avoid_: Bibliography options
+
+**Disambiguation Overrides**:
+The per-reference data the disambiguation Stage computes (how many names to show, how far each name is expanded, whether `disambiguate` branches apply, the year-suffix) and the render reads from its context.
+_Avoid_: Disambiguation state, disambiguation config
