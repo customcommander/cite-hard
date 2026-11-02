@@ -40,6 +40,10 @@ _Avoid_: Citation (ambiguous with a single Cite)
 A Cite whose reference is not in the Registry. It stays in its Cluster and renders as a placeholder until a reference with the same id is added.
 _Avoid_: Orphan, broken cite
 
+**Primary Dialect**:
+The locale file a bare language (`de`) or a secondary dialect (`de-AT`) falls back to (`de-DE`). The Compiler's hard-coded map decides it, following the spec table plus `sr-Cyrl-RS`.
+_Avoid_: Default dialect
+
 **Output**:
 The rendered result of a Cite, Cluster or bibliography entry: a pair of strings, one HTML and one plain text, always produced together.
 _Avoid_: Format setting, rendering mode
