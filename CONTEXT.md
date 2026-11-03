@@ -63,3 +63,7 @@ _Avoid_: Bibliography options
 **Disambiguation Overrides**:
 The per-reference data the disambiguation Stage computes (how many names to show, how far each name is expanded, whether `disambiguate` branches apply, the year-suffix) and the render reads from its context.
 _Avoid_: Disambiguation state, disambiguation config
+
+**Cite Group**:
+The Cites of one Cluster whose first rendered names are identical, moved together at the position of the first of them. Collapsing acts on Cite Groups.
+_Avoid_: Cite cluster, name group

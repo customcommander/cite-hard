@@ -15,7 +15,7 @@ ADR 0001 made the processor stateful with eager recompute, so callers need to le
 - One flush emits `registry`, then `cluster` events in document order, then `bibliography`.
 - A throwing listener is caught, the remaining listeners still run, and the error is re-raised asynchronously (`setTimeout(() => { throw e })`). No logging. Mutators never throw because of a listener.
 - Calling a mutator while dispatching throws. Reads stay allowed.
-- Removing a reference that Clusters still cite is normal: the Cite stays as a Dangling Cite and its Cluster is re-emitted. A Dangling Cite renders a placeholder; it is ignored by disambiguation, numbering and collapsing, keeps its authored position in Cite sorting, but occupies its slot for position so it breaks `ibid` chains. Re-adding the same id restores output. The `cluster` payload flags missing Cites. Placeholder text per format is decided in the output-formats ticket.
+- Removing a reference that Clusters still cite is normal: the Cite stays as a Dangling Cite and its Cluster is re-emitted. A Dangling Cite renders a placeholder; it is ignored by disambiguation, numbering and collapsing (the processor appends it after the collapsed output, ADR 0008), keeps its authored position in Cite sorting, but occupies its slot for position so it breaks `ibid` chains. Re-adding the same id restores output. The `cluster` payload flags missing Cites. Placeholder text per format is decided in the output-formats ticket.
 
 ## Considered options
 
