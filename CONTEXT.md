@@ -57,7 +57,7 @@ The second compiled form of the macros a Style's `cs:sort` keys use, which produ
 _Avoid_: Sort mode, sort pass
 
 **Layout**:
-The per-Style bibliography presentation parameters (hanging indent, second-field align, entry spacing, line spacing) delivered alongside the bibliography entries.
+The per-Style bibliography presentation parameters (hanging indent, second-field align, entry spacing, line spacing) delivered alongside the bibliography entries. They are hints for the caller's styling; they never change the plain-text Output.
 _Avoid_: Bibliography options
 
 **Disambiguation Overrides**:
