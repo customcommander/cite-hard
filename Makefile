@@ -1,3 +1,5 @@
+TEST_SUITE_REV = 6eefc5b07c6969ab8999e48542acbcc131cba864
+
 SPECS = $(wildcard vendor/test-suite/*.json)
 TESTS = $(patsubst vendor/test-suite/%.json,test/%.test.js,$(SPECS))
 
@@ -33,8 +35,8 @@ vendor/locales:
 
 vendor/test-suite:
 	mkdir -p $@
-	curl --silent -L "https://github.com/citation-style-language/test-suite/archive/refs/heads/master.tar.gz" -o $@.tar.gz
-	tar -xzf $@.tar.gz -C $@ --strip-components=3 test-suite-master/processor-tests/machines
+	curl --silent -L "https://github.com/citation-style-language/test-suite/archive/$(TEST_SUITE_REV).tar.gz" -o $@.tar.gz
+	tar -xzf $@.tar.gz -C $@ --strip-components=3 test-suite-$(TEST_SUITE_REV)/processor-tests/machines
 
 # clean:; rm -rf vendor test
 clean:; rm -rf vendor/schema vendor/styles vendor/locales vendor/test-suite
