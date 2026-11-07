@@ -92,7 +92,7 @@ Resolved entirely at compile time: style `default-locale` (language to Primary D
 ## 7. Testing (ADR 0005, issue #9)
 
 - CSL test-suite pinned at `6eefc5b` (the Makefile currently fetches `master` and must change). `test/` is gitignored.
-- The harness extracts each fixture's CSL, compiles one Generated Processor per distinct style under `make -j`, runs the compiled ADVANCED output, compares `html` exactly (bibliography html compared with inter-tag whitespace stripped on both sides, ADR 0009).
+- The harness extracts each fixture's CSL, compiles one Generated Processor per fixture under `make -j`, runs the compiled ADVANCED output, compares `html` exactly (bibliography html compared with inter-tag whitespace stripped on both sides, ADR 0009).
 - An expected-failures baseline with a per-group table is checked in. Permanent won't-fix: the 2 `[CSL STYLE ERROR]` fixtures, item `language`, the fr-FR fixture. The harness synthesises ids only for 4 fixtures.
 - The 43 edit-sequence fixtures are replayed through the Cluster API (one `batch` per step, order set from pre/post, `noteIndex` of post Clusters updated, final-state compare). Until the replay exists they are `pending`.
 - Smoke styles live as data with citeproc-js goldens (`make golden`); goldens override ADR 0009's plain-text display rules where they differ.

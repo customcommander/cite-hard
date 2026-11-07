@@ -57,5 +57,43 @@ dist/%.js: src/uncompiled/%.js src/lib.js src/processor.js src/externs.js
 	                 --hide_warnings_for=vendor/base.js \
                    --js_output_file=$@
 
+# One Generated Processor per fixture, named after it.
+# A fixture whose style fails to compile is logged in <fixture>.compile.log next to it and does not stop the run.
+FIXTURES = $(patsubst vendor/test-suite/%.json,%,$(SPECS))
+
+vendor/test-suite-extracted/%.csl: vendor/test-suite/%.json
+	@mkdir -p $(@D)
+	@jq -j '.csl' $< > $@
+
+# Items lacking an id get "ITEM--GENERATED--ID-<position>" (1-based), a name no fixture uses.
+vendor/test-suite-extracted/%.items.json: vendor/test-suite/%.json
+	@mkdir -p $(@D)
+	@jq '.input | [range(length) as $$i | .[$$i] | .id //= "ITEM--GENERATED--ID-\($$i + 1)"]' $< > $@
+
+vendor/test-suite-extracted/%.expected.txt: vendor/test-suite/%.json
+	@mkdir -p $(@D)
+	@jq -j '.result' $< > $@
+
+process-test-suite: $(patsubst %,vendor/test-suite-extracted/%.csl,$(FIXTURES)) \
+                    $(patsubst %,vendor/test-suite-extracted/%.items.json,$(FIXTURES)) \
+                    $(patsubst %,vendor/test-suite-extracted/%.expected.txt,$(FIXTURES)) \
+                    $(patsubst %,vendor/test-suite-extracted/%.js,$(FIXTURES))
+
+vendor/test-suite-extracted/%.js: vendor/test-suite-extracted/%.csl src/transform.xsl src/lib.js src/processor.js src/externs.js
+	@rm -f vendor/test-suite-extracted/$*.compile.log
+	@xsltproc --stringparam stylename $* src/transform.xsl $< > vendor/test-suite-extracted/$*.uncompiled.js 2> vendor/test-suite-extracted/$*.compile.log \
+	&& closure-compiler -O ADVANCED \
+	                    --js=vendor/base.js \
+	                    --js=src/lib.js \
+	                    --js=src/processor.js \
+	                    --js=src/externs.js \
+	                    --js=vendor/test-suite-extracted/$*.uncompiled.js \
+	                    --entry_point=goog:citehard.styles.uncompiled \
+	                    --isolation_mode=IIFE \
+	                    --hide_warnings_for=vendor/base.js \
+	                    --js_output_file=$@ >> vendor/test-suite-extracted/$*.compile.log 2>&1 \
+	&& rm -f vendor/test-suite-extracted/$*.compile.log \
+	|| { rm -f $@; echo "FAILED $*" | tee -a vendor/test-suite-extracted/$*.compile.log; }
+
 # .PHONY: vendor test
-.PHONY: vendor locales
+.PHONY: vendor locales process-test-suite

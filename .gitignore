@@ -7,3 +7,4 @@ vendor/schema
 vendor/styles
 vendor/test-suite
 test
+vendor/test-suite-extracted
