@@ -1,0 +1,7 @@
+{
+  "name": "cite-hard",
+  "private": true,
+  "scripts": {
+    "test": "make -j$(node -p 'os.availableParallelism()') run-test-suite"
+  }
+}
