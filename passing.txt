@@ -1,0 +1,1 @@
+# Fixtures that must pass, one name per line. Every other fixture is generated with expectFailure, so one that starts passing fails the run until it is listed here.

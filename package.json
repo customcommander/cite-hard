@@ -1,7 +1,14 @@
 {
   "name": "cite-hard",
   "private": true,
+  "devEngines": {
+    "runtime": {
+      "name": "node",
+      "version": "^24.14.0",
+      "onFail": "download"
+    }
+  },
   "scripts": {
-    "test": "make -j$(node -p 'os.availableParallelism()') run-test-suite"
+    "test": "make -j$(node -p 'os.availableParallelism()') test-suite && node --test test-suite/*.test.js"
   }
 }

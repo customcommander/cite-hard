@@ -51,7 +51,7 @@ dist/%.js: src/uncompiled/%.js src/lib.js src/processor.js src/externs.js
                    --js_output_file=$@
 
 # One Generated Processor per fixture, compiled from the CSL inlined in the fixture.
-# A style that fails to compile leaves a stub that throws the compiler log, so the fixture fails and the run goes on.
+# A style that fails to compile leaves a stub that records the compiler log, so the fixture's test throws it and the run goes on.
 test-suite/%.compiled.js: vendor/test-suite/%.json src/transform.xsl src/lib.js src/processor.js src/externs.js
 	@mkdir -p $(@D)
 	@log=$$( { jq -j '.csl' $< | xsltproc --stringparam stylename $* src/transform.xsl - > test-suite/$*.uncompiled.js \
@@ -65,16 +65,17 @@ test-suite/%.compiled.js: vendor/test-suite/%.json src/transform.xsl src/lib.js 
 	                      --isolation_mode=IIFE \
 	                      --hide_warnings_for=vendor/base.js \
 	                      --js_output_file=$@; } 2>&1 ) \
-	|| { echo "FAILED $*"; jq -nr --arg log "$$log" '"throw new Error(\($$log | tojson));"' > $@; }
+	|| { echo "FAILED $*"; jq -nr --arg name $* --arg log "$$log" '"globalThis[\("cite-hard.compile-error." + $$name | tojson)] = \($$log | tojson);"' > $@; }
 
 # Self-contained test: the processor, the items, the clusters and the expected string are all inlined.
-test-suite/%.test.js: vendor/test-suite/%.json test-suite/%.compiled.js src/fixture-test.jq
-	@jq -r --arg name $* --rawfile processor test-suite/$*.compiled.js -f src/fixture-test.jq $< > $@
+test-suite/%.test.js: vendor/test-suite/%.json test-suite/%.compiled.js src/fixture-test.jq passing.txt
+	@jq -r --arg name $* --rawfile processor test-suite/$*.compiled.js --rawfile passing passing.txt -f src/fixture-test.jq $< > $@
 
-run-test-suite: $(TESTS)
-	node --test test-suite/*.test.js
+# Builds every fixture test. Run them with `node --test test-suite/*.test.js` (see `pnpm test`).
+# Fixtures not listed in passing.txt are generated with expectFailure: an unexpected pass fails the run like an unexpected fail.
+test-suite: $(TESTS)
 
 # Keep the compiled processors: they are intermediates of the tests but slow to rebuild.
 .SECONDARY:
 
-.PHONY: vendor locales run-test-suite
+.PHONY: vendor locales test-suite
