@@ -18,7 +18,7 @@ The locale research (#7) left spec-silent questions, and the test-suite research
 - **`gender`** travels with its (name, form) term. The source that supplies the text supplies the `gender`; overriding a term overrides all of it.
 - **Ordinals**: defining any `ordinal*` term in a source supplies the whole set from that source. `long-ordinal-NN` is outside that rule and falls back per (name, `gender-form`).
 - **Dialect map**: the language-to-primary-dialect table and the secondary-to-primary table are hard-coded in XSLT. The secondary table is the spec's 8 rows plus `sr-Cyrl-RS` -> `sr-Latn-RS`, a deliberate extension that matches `locales.json`.
-- **Item `language` is out of scope.** The style's `default-locale` alone decides everything locale-dependent, including whether title-case assumes English. `choose` on the `language` variable sees it like any other variable. The 8 fixtures that depend on it (`locale_TitleCaseGarbageLangEmptyLocale`, `locale_TitleCaseGarbageLangEnglishLocale`, `locale_TitleCaseGarbageLangNonEnglishLocale`, `locale_TitleCaseNonEnglishLangUpperEmptyLocale`, `number_LimitOrdinalsToDayOne`, `textcase_LocaleUnicode`, `textcase_TitleCaseNonEnglish`, `textcase_TitleCaseWithVolumeTitle`) are permanent expected failures, one baseline group "item language unsupported".
+- **Item `language` is out of scope.** The style's `default-locale` alone decides everything locale-dependent, including whether title-case assumes English. `choose` on the `language` variable sees it like any other variable. The 8 fixtures that depend on it (`locale_TitleCaseGarbageLangEmptyLocale`, `locale_TitleCaseGarbageLangEnglishLocale`, `locale_TitleCaseGarbageLangNonEnglishLocale`, `locale_TitleCaseNonEnglishLangUpperEmptyLocale`, `number_LimitOrdinalsToDayOne`, `textcase_LocaleUnicode`, `textcase_TitleCaseNonEnglish`, `textcase_TitleCaseWithVolumeTitle`) are permanent expected failures, never listed in `passing.txt`.
 - **`locale_PageRangeDelimiterTermFrenchUndef`** expects U+2011 but locales v0.0.97 fr-FR has an en dash. Won't-fix for now; vendored locale data is never patched. Follow-up: ask upstream which side is wrong.
 
 ## Considered options
@@ -31,4 +31,4 @@ The locale research (#7) left spec-silent questions, and the test-suite research
 
 ## Consequences
 
-Locale resolution costs nothing at runtime; unused terms are never emitted. Styles relying on item `language` render with the style locale's rules. The baseline gains two entries (the 8-fixture group and the fr-FR fixture).
+Locale resolution costs nothing at runtime; unused terms are never emitted. Styles relying on item `language` render with the style locale's rules. Nine fixtures (the 8 and the fr-FR one) stay permanent expected failures.

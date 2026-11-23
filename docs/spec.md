@@ -93,7 +93,7 @@ Resolved entirely at compile time: style `default-locale` (language to Primary D
 
 - CSL test-suite pinned at `6eefc5b` (the Makefile currently fetches `master` and must change). `test/` is gitignored.
 - The harness extracts each fixture's CSL, compiles one Generated Processor per fixture under `make -j`, runs the compiled ADVANCED output, compares `html` exactly (bibliography html compared with inter-tag whitespace stripped on both sides, ADR 0009).
-- `passing.txt` lists the fixtures that must pass; every other fixture runs with `expectFailure`, so one that starts passing fails the run until it is listed. A per-group table of the failing fixtures is checked in. Permanent won't-fix (never listed): the 2 `[CSL STYLE ERROR]` fixtures, item `language`, the fr-FR fixture. The harness synthesises ids only for 4 fixtures.
+- `passing.txt` lists the fixtures that must pass; every other fixture runs with `expectFailure`, so one that starts passing fails the run until it is listed. Permanent won't-fix (never listed in `passing.txt`): the 2 `[CSL STYLE ERROR]` fixtures, item `language`, the fr-FR fixture. The harness synthesises ids only for 4 fixtures.
 - The 43 edit-sequence fixtures are replayed through the Cluster API (one `batch` per step, order set from pre/post, `noteIndex` of post Clusters updated, final-state compare). Until the replay exists they are `pending`.
 - Smoke styles live as data with citeproc-js goldens (`make golden`); goldens override ADR 0009's plain-text display rules where they differ.
 - Compiled output may be checked in.
@@ -109,7 +109,7 @@ Resolved entirely at compile time: style `default-locale` (language to Primary D
 
 Ordered; each is AFK-able once its blockers land.
 
-1. **Harness and baseline**: pin the test-suite, per-style compile under `make -j`, fixture extraction and id synthesis, exact `html` compare, `passing.txt` (everything else `expectFailure`) and per-group table, `externs.js` skeleton. Everything below is measured by it.
+1. **Harness and baseline**: pin the test-suite, per-style compile under `make -j`, fixture extraction and id synthesis, exact `html` compare, `passing.txt` (everything else `expectFailure`), `externs.js` skeleton. Everything below is measured by it.
 2. **Compiler spine**: `(ctx, reference)` emitted functions, `cs:macro` as functions, `text`/`group`/`choose`, pseudo-variable routing, affixes/formatting/quotes, the `{raw, styled}` renderer and `{html, text}` Output, fix compiled `cite()`.
 3. **Names**: `cs:names`, `cs:name`, `cs:substitute`, et-al, initials, labels, name-part formatting.
 4. **Dates and numbers**: `cs:date`/`cs:date-part` (ranges, seasons, numeric coercion), `cs:number` forms, ordinals, page ranges.
