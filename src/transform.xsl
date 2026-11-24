@@ -479,15 +479,17 @@
 
   <xsl:template match="csl:text[@variable]" mode="function-call">
     lib.variable(
+      ctx,
+      reference,
       <xsl:choose>
         <xsl:when test="@variable = 'container-title-short' or (@form = 'short' and @variable = 'container-title')">
-          reference['container-title-short'] ?? reference['container-title']
+          'container-title-short', 'container-title'
         </xsl:when>
         <xsl:when test="@variable = 'title-short' or (@form = 'short' and @variable = 'title')">
-          reference['title-short'] ?? reference['title']
+          'title-short', 'title'
         </xsl:when>
         <xsl:otherwise>
-          reference['<xsl:value-of select="@variable"/>']
+          '<xsl:value-of select="@variable"/>'
         </xsl:otherwise>
       </xsl:choose>
     )

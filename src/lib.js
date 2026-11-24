@@ -157,8 +157,14 @@ function number_roman(value) {
   return leaf(value ?? '');
 }
 
-function variable(value) {
-  const out = leaf(value ?? '');
+/**
+ * @param {!Object} ctx
+ * @param {!Object} reference
+ * @param {string} name
+ * @param {string=} fallback Variable read when `name` is unset (short forms).
+ */
+function variable(ctx, reference, name, fallback) {
+  const out = leaf(reference[name] ?? reference[fallback] ?? '');
   out.variable = true;
   return out;
 }

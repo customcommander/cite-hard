@@ -16,7 +16,7 @@ Scope: CSL 1.0.2 core. Out of scope: multilingual/Juris-M extensions, runtime lo
 - CSL-JSON variables are pruned by call-site selection (type-specific `lib` functions for names, date, number, text). Variable names are quoted string literals.
 - One JS function per `cs:macro`; no inlining in XSLT.
 - Emitted functions take `(ctx, reference)`. `ctx` is a fixed record built per render (Cite data, Cluster context, Disambiguation Overrides); `reference` is the untouched CSL-JSON object.
-- Pseudo-variables and the `position`/`disambiguate` tests are routed in XSLT from a fixed name list; every other name becomes `lib.variable('name')`.
+- Pseudo-variables and the `position`/`disambiguate` tests are routed in XSLT from a fixed name list; every other name becomes `lib.variable(ctx, reference, 'name')`. Short forms (`title-short`, `container-title-short`, and `form="short"` on `title` and `container-title`) pass the long name as an optional fourth argument, the variable read when the short one is unset.
 - Optional **Stages** are passed to `new CSLProcessor(...)` as functions or `null`: cite sorting, bibliography sorting, disambiguation (ADR 0007), collapse (ADR 0008), author-substitute (ADR 0009). Static values (`layout`, delimiters) are plain data.
 - Closure ADVANCED constraints (research #5): CSL-JSON keys by quoted access; the API surface and the keys `html`, `text`, `output`, `entries`, `layout`, `ctx` fields and Stage parameter names go in `src/externs.js` or are quoted; `--isolation_mode=IIFE`; global named by quoted assignment.
 
