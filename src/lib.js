@@ -134,9 +134,10 @@ function wrap(prefix, suffix, out) {
 }
 
 /**
+ * @param {!Object} ctx
  * @param {string|undefined} value
  */
-function value(value) {
+function value(ctx, value) {
   return leaf(value ?? '');
 }
 
@@ -162,7 +163,11 @@ function variable(value) {
   return out;
 }
 
-function term(value) {
+/**
+ * @param {!Object} ctx
+ * @param {?} value
+ */
+function term(ctx, value) {
   return leaf(value);
 }
 

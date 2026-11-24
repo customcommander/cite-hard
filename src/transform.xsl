@@ -494,11 +494,11 @@
   </xsl:template>
 
   <xsl:template match="csl:text[@term]" mode="function-call">
-    lib.term(locales.<xsl:apply-templates select="." mode="l10n-var-name"/>)
+    lib.term(ctx, locales.<xsl:apply-templates select="." mode="l10n-var-name"/>)
   </xsl:template>
 
   <xsl:template match="csl:text[@value]" mode="function-call">
-    lib.value(`<xsl:value-of select="@value"/>`)
+    lib.value(ctx, `<xsl:value-of select="@value"/>`)
   </xsl:template>
 
   <!-- MACRO / TEXT calling macro  -->
