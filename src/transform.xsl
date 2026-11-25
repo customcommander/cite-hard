@@ -157,10 +157,11 @@
       </xsl:call-template>;
     </xsl:for-each>
 
+    <!-- One function per macro. Calls are emitted by csl:text[@macro]. -->
     <xsl:for-each select="csl:macro">
       <xsl:sort select="@name"/>
-      function macro_<xsl:value-of select="translate(@name, '-', '_')"/>(ctx, reference) {
-        return (<xsl:apply-templates select="*[position() = 1]" mode="function-call" />);
+      function <xsl:apply-templates select="." mode="macro-name"/>(ctx, reference) {
+        return (<xsl:apply-templates select="." mode="function-call"/>);
       }
     </xsl:for-each>
 
@@ -506,7 +507,30 @@
   <!-- MACRO / TEXT calling macro  -->
   
   <xsl:template match="csl:text[@macro]" mode="function-call">
-    macro_<xsl:value-of select="translate(@macro, '-', '_')"/>(ctx, reference)
+    <xsl:apply-templates select="." mode="macro-name"/>(ctx, reference)
+  </xsl:template>
+
+  <xsl:template match="csl:macro | csl:text[@macro]" mode="macro-name">
+    <xsl:text>macro_</xsl:text>
+    <xsl:value-of select="translate(@name | @macro, '-.:', '___')"/>
+  </xsl:template>
+
+  <!-- A macro with several children renders them as one branch,
+       like cs:group without the delimiter and implicit conditional. -->
+  <xsl:template match="csl:macro" mode="function-call">
+    <xsl:choose>
+      <xsl:when test="count(*) = 1">
+        <xsl:apply-templates select="*[1]"/>
+      </xsl:when>
+      <xsl:otherwise>
+        lib.branch([
+          <xsl:for-each select="*">
+            <xsl:apply-templates select="."/>
+            <xsl:if test="position() != last()">,</xsl:if>
+          </xsl:for-each>
+        ])
+      </xsl:otherwise>
+    </xsl:choose>
   </xsl:template>
 
   <!-- L10N -->
