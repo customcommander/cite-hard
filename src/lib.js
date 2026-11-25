@@ -194,7 +194,10 @@ function group(nodes, delimiter = '') {
     return out;
   }
 
-  return branch(nodes);
+  // The delimiter separates rendered (non-empty) children only
+  const rendered = nodes.filter(n => n.raw !== '');
+  const delimited = rendered.flatMap((n, i) => i === 0 || delimiter === '' ? [n] : [leaf(delimiter), n]);
+  return branch(delimited);
 }
 
 /**
