@@ -232,8 +232,12 @@ function date_part() {
   return 'TODO';
 }
 
-function choose(things /** ? */) {
-
+/**
+ * @param {?IRNode} out The rendered branch that matched, or null when none did.
+ * @return {!IRNode}
+ */
+function choose(out) {
+  return out ?? leaf('');
 }
 
 function test(reference, {mode = 'all', tests}) {
@@ -263,7 +267,7 @@ function test_variable(reference) {
 
 function test_type(reference) {
   return function (type) {
-    return reference['type'] = type;
+    return reference['type'] === type;
   };
 }
 
@@ -281,8 +285,11 @@ function test_is_uncertain_date(reference) {
   };
 }
 
-function test_locator(any /** ? */) {
-  return true;
+function test_locator(reference) {
+  return function (locator) {
+    // TODO: actual check
+    return false;
+  };
 }
 
 function T() {
@@ -392,13 +399,8 @@ function test_none(pred, str_vals) {
   return str_vals.split(' ').every(val => !pred(val));
 }
 
-function concat(nodes /** Array<IRNode>*/) {
-  return nodes;
-}
-
 exports = {
   T,
-  concat,
   branch,
   case_capitalize_first,
   case_lowercase,

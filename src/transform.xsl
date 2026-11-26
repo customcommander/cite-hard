@@ -389,12 +389,12 @@
   <xsl:template match="csl:if | csl:else-if | csl:else" mode="function-call">
     <xsl:choose>
       <xsl:when test="count(*) = 1">
-        <xsl:apply-templates select="*[1]" mode="function-call"/>
+        <xsl:apply-templates select="*[1]"/>
       </xsl:when>
       <xsl:otherwise>
-        lib.concat([
+        lib.branch([
           <xsl:for-each select="*">
-            <xsl:apply-templates select="." mode="function-call" />
+            <xsl:apply-templates select="."/>
             <xsl:if test="not(position() = last())">,</xsl:if>
           </xsl:for-each>
         ])
