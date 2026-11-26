@@ -339,49 +339,49 @@
     )
   </xsl:template>
 
+  <!-- One test call per attribute token, constants baked in, joined by the match operator.
+       Pseudo-variable `locator` reads ctx.cite; every other variable name reads the reference (ADR 0004). -->
   <xsl:template match="csl:if | csl:else-if" mode="bool-condition">
-    <xsl:variable name="condition">
+    <xsl:variable name="match" select="concat(@match, '')"/>
+    <xsl:variable name="seed">
       <xsl:choose>
-        <xsl:when test="@match = 'any'">any</xsl:when>
-        <xsl:when test="@match = 'none'">none</xsl:when>
-        <xsl:otherwise>all</xsl:otherwise>
+        <xsl:when test="$match = 'any'">false</xsl:when>
+        <xsl:otherwise>true</xsl:otherwise>
       </xsl:choose>
     </xsl:variable>
-
-    <xsl:variable name="js-operator">
+    <xsl:variable name="join">
       <xsl:choose>
-        <xsl:when test="$condition = 'any'">||</xsl:when>
+        <xsl:when test="$match = 'any'">||</xsl:when>
+        <xsl:when test="$match = 'none'">&amp;&amp; !</xsl:when>
         <xsl:otherwise>&amp;&amp;</xsl:otherwise>
       </xsl:choose>
     </xsl:variable>
 
-    <xsl:variable name="lib-condition-function" select="concat('lib.test_', $condition)"/>
-
-    (
+    (<xsl:value-of select="$seed"/>
     <xsl:for-each select="@*[not(name() = 'match')]">
-      <xsl:choose>
-        <xsl:when test="name() = 'is-numeric'">
-          <xsl:value-of select="$lib-condition-function"/>(lib.test_is_numeric(reference), '<xsl:value-of select="."/>')
-        </xsl:when>
-        <xsl:when test="name() = 'is-uncertain-date'">
-          <xsl:value-of select="$lib-condition-function"/>(lib.test_is_uncertain_date(reference), '<xsl:value-of select="."/>')
-        </xsl:when>
-        <xsl:when test="name() = 'type'">
-          <xsl:value-of select="$lib-condition-function"/>(lib.test_type(reference), '<xsl:value-of select="normalize-space(.)"/>')
-        </xsl:when>
-        <xsl:when test="name() = 'variable'">
-          <xsl:value-of select="$lib-condition-function"/>(lib.test_variable(reference), '<xsl:value-of select="."/>')
-        </xsl:when>
-        <xsl:when test="name() = 'locator'">
-          <xsl:value-of select="$lib-condition-function"/>(lib.test_locator(reference), '<xsl:value-of select="."/>')
-        </xsl:when>
-        <xsl:otherwise>'TODO:<xsl:value-of select="name()"/>'</xsl:otherwise>
-      </xsl:choose>
-      <xsl:if test="not(position() = last())">
-        <xsl:value-of select="$js-operator"/>
-      </xsl:if>
-    </xsl:for-each>
-    )
+      <xsl:variable name="attr" select="name()"/>
+      <xsl:for-each select="str:tokenize(normalize-space(.), ' ')">
+        <xsl:variable name="token" select="string(.)"/>
+        <!-- JS expression for the variable named by the token; pseudo-variable `locator` reads ctx.cite. -->
+        <xsl:variable name="value">
+          <xsl:choose>
+            <xsl:when test="$token = 'locator'">ctx.cite?.locator</xsl:when>
+            <xsl:otherwise>reference['<xsl:value-of select="$token"/>']</xsl:otherwise>
+          </xsl:choose>
+        </xsl:variable>
+        <xsl:value-of select="concat(' ', $join, ' ')"/>
+        <xsl:choose>
+          <xsl:when test="$attr = 'type'">lib.test_type(reference, '<xsl:value-of select="$token"/>')</xsl:when>
+          <!-- locator="page": compares the Cite's locator label. -->
+          <xsl:when test="$attr = 'locator'">lib.test_locator(ctx, '<xsl:value-of select="$token"/>')</xsl:when>
+          <xsl:when test="$attr = 'variable'">lib.test_variable(<xsl:value-of select="$value"/>)</xsl:when>
+          <xsl:when test="$attr = 'is-numeric'">lib.test_is_numeric(<xsl:value-of select="$value"/>)</xsl:when>
+          <xsl:when test="$attr = 'is-uncertain-date'">lib.test_is_uncertain_date(<xsl:value-of select="$value"/>)</xsl:when>
+          <!-- Anything else is a test for a future ticket. -->
+          <xsl:otherwise>'TODO:<xsl:value-of select="$attr"/>'</xsl:otherwise>
+        </xsl:choose>
+      </xsl:for-each>
+    </xsl:for-each>)
   </xsl:template>
 
   <!-- IF/ELSE-IF -->

@@ -240,56 +240,51 @@ function choose(out) {
   return out ?? leaf('');
 }
 
-function test(reference, {mode = 'all', tests}) {
-  for (let i = 0; i < tests.length; i++) {
-    const [pred, str] = tests[i];
-    const parts = str.split(' ');
-
-    for (let j = 0; j < parts.length; j++) {
-      if (mode == 'all' && !pred(reference, parts[j])) {
-        return false;
-      } else if (mode == 'any' && pred(reference, parts[j])) {
-        return true;
-      } else if (mode == 'none' && pred(reference, parts[j])) {
-        return false;
-      }
-    }
-  }
-
-  return mode !== 'any';
+/**
+ * @param {?} value
+ * @return {boolean}
+ */
+function test_variable(value) {
+  return Array.isArray(value) ? value.length > 0 : value != null && value !== '';
 }
 
-function test_variable(reference) {
-  return function (varname) {
-    return reference[varname] != null && reference[varname] !== '';
-  };
+/**
+ * @param {!Object} reference
+ * @param {string} type
+ * @return {boolean}
+ */
+function test_type(reference, type) {
+  return reference['type'] === type;
 }
 
-function test_type(reference) {
-  return function (type) {
-    return reference['type'] === type;
-  };
+/**
+ * True for numbers and for strings made solely of numbers with optional letter affixes,
+ * joined by commas, ampersands or dashes: "2", "D2", "2b", "2-4", "2, 3", "2 & 3".
+ * @param {?} value
+ * @return {boolean}
+ */
+function test_is_numeric(value) {
+  if (typeof value === 'number') return true;
+  return typeof value === 'string'
+    && value.split(/\s*[,&\-\u2013]\s*/).every(part => /^[A-Za-z]*\d+[A-Za-z]*$/.test(part));
 }
 
-function test_is_numeric(reference) {
-  return function (varname) {
-    // TODO: actual check
-    return reference[varname] != null;
-  };
+/**
+ * @param {?} value A date variable.
+ * @return {boolean}
+ */
+function test_is_uncertain_date(value) {
+  return !!value && !!value['circa'];
 }
 
-function test_is_uncertain_date(reference) {
-  return function (varname) {
-    // TODO: actual check
-    return reference[varname] != null;
-  };
-}
-
-function test_locator(reference) {
-  return function (locator) {
-    // TODO: actual check
-    return false;
-  };
+/**
+ * A locator is only tested when the Cite has one; its label defaults to "page".
+ * @param {!Object} ctx
+ * @param {string} label
+ * @return {boolean}
+ */
+function test_locator(ctx, label) {
+  return test_variable(ctx.cite?.locator) && (ctx.cite.label ?? 'page') === label;
 }
 
 function T() {
@@ -372,33 +367,6 @@ function strip_periods(out) {
   return out;
 }
 
-/**
- * @param {function(string):boolean} pred
- * @param {string} str_vals
- * @return {boolean}
- */
-function test_any(pred, str_vals) {
-  return str_vals.split(' ').some(val => pred(val));
-}
-
-/**
- * @param {function(string):boolean} pred
- * @param {string} str_vals
- * @return {boolean}
- */
-function test_all(pred, str_vals) {
-  return str_vals.split(' ').every(val => pred(val));
-}
-
-/**
- * @param {function(string):boolean} pred
- * @param {string} str_vals
- * @return {boolean}
- */
-function test_none(pred, str_vals) {
-  return str_vals.split(' ').every(val => !pred(val));
-}
-
 exports = {
   T,
   branch,
@@ -425,10 +393,6 @@ exports = {
   strip_periods,
   substitute,
   term,
-  test,
-  test_any,
-  test_all,
-  test_none,
   test_is_numeric,
   test_is_uncertain_date,
   test_locator,
